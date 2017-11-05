@@ -398,75 +398,71 @@ var files = [
 app.use("/api/wsgi/", (function(){
     var router = express.Router();
 
-    // GET: //api/wsgi/
+    // GET: /api/wsgi/
     router.get("", (request, response) => {
         response.json(body);
     });
 
-    // GET: //api/wsgi/companies
+    // GET: /api/wsgi/companies
     router.get("/companies", (request, response) => {
         response.json(companies);
     });
 
-    // GET: //api/wsgi/companies:company_id
-    router.get("/companies:company_id", (request, response) => {
+    // GET: /api/wsgi/companies:company_id
+    router.get("/companies/:company_id", (request, response) => {
         var company = companies.filter(function(value, index, array){
-            if(value.id == request.params.company_id) {
-                response.status(200).send("OK");
-                return true;
-            }
-            response.status(404).send("Not Found");
-            return false;
+            return value.id == request.params.company_id;
         });
+
+        if(company.length == 0) response.status(404);
+        else response.status(200);
+
         response.json(company);
     });
 
-    // GET: //api/wsgi/shops
+    // GET: /api/wsgi/shops
     router.get("/shops", (request, response) => {
         response.json(shops);
     });
 
-    // GET: //api/wsgi/shops/:shop_id
+    // GET: /api/wsgi/shops/:shop_id
     router.get("/shops/:shop_id", (request, response) => {
         var shop = shops.filter(function(value, index, array){
-            if(value.id == request.params.shop_id) {
-                response.status(200).send("OK");
-                return true;
-            }
-            response.status(404).send("Not Found");
-            return false;
+            return value.id == request.params.shop_id;
         });
+
+        if(shop.length == 0) response.status(404);
+        else response.status(200);
+
         response.json(shop);
     });
 
-    // GET: //api/wsgi/shops/:shop_id/files
+    // GET: /api/wsgi/shops/:shop_id/files
     router.get("/shops/:shop_id/files", (request, response) => {
         var shopFiles = files.filter(function(value, index, array){
-            if(value.shop_id == request.params.shop_id) {
-                response.status(200).send("OK");
-                return true;
-            }
-            response.status(404).send("Not Found");
-            return false;
+            return value.shop_id == request.params.shop_id;
         });
+
+        if(shopFiles.length == 0) response.status(404);
+        else response.status(200);
+        
         response.json(shopFiles);
     });
 
-    // GET: //api/wsgi/files
+    // GET: /api/wsgi/files
     router.get("/files", (request, response) => {
         response.json(files);
     });
 
-    // GET: //api/wsgi/files/:file_id
+    // GET: /api/wsgi/files/:file_id
     router.get("/files/:file_id", (request, response) => {
         var file = files.filter(function(value, index, array){
-            if(value.id == request.params.file_id) {
-                response.status(200).send("OK");
-                return true;
-            }
-            response.status(404).send("Not Found");
-            return false;
+            return value.id == request.params.file_id;
         });
+
+        if(file.length == 0) response.status(404);
+        else response.status(200);
+
         response.json(file);
     });
 
