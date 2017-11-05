@@ -3,6 +3,9 @@ var app = express();
 var server = app.listen(3000, function () {
     console.log("Node.js is listening to PORT:" + server.address().port);
 });
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 var body = {
     "status": "200",
@@ -392,50 +395,80 @@ var files = [
     }
 ]
 
-app.get("/api/wsgi", function (req, res, next) {
-    res.json(body);
-});
+app.use("/api/wsgi/", (function(){
+    var router = express.Router();
 
-app.get("/api/wsgi/companies", function (req, res, next) {
-    res.json(companies);
-});
-
-app.get("/api/wsgi/companies/:company_id", function (req, res, next) {
-    var company = companies.filter(function(value, index, array){
-        if(value.id == req.params.company_id) return true;
-        return false;
+    // GET: //api/wsgi/
+    router.get("", (request, response) => {
+        response.json(body);
     });
-    res.json(company);
-});
 
-app.get("/api/wsgi/shops", function (req, res, next) {
-    res.json(shops);
-});
-
-app.get("/api/wsgi/shops/:shop_id", function (req, res, next) {
-    var shop = shops.filter(function(value, index, array){
-        if(value.id == req.params.shop_id) return true;
-        return false;
+    // GET: //api/wsgi/companies
+    router.get("/companies", (request, response) => {
+        response.json(companies);
     });
-    res.json(shop);
-});
 
-app.get("/api/wsgi/shops/:shop_id/files", function (req, res, next) {
-    var shopFiles = files.filter(function(value, index, array){
-        if(value.shop_id == req.params.shop_id) return true;
-        return false;
+    // GET: //api/wsgi/companies:company_id
+    router.get("/companies:company_id", (request, response) => {
+        var company = companies.filter(function(value, index, array){
+            if(value.id == request.params.company_id) {
+                response.status(200).send("OK");
+                return true;
+            }
+            response.status(404).send("Not Found");
+            return false;
+        });
+        response.json(company);
     });
-    res.json(shopFiles);
-});
 
-app.get("/api/wsgi/files", function (req, res, next) {
-    res.json(files);
-});
-
-app.get("/api/wsgi/files/:file_id", function (req, res, next) {
-    var file = files.filter(function(value, index, array){
-        if(value.id == req.params.file_id) return true;
-        return false;
+    // GET: //api/wsgi/shops
+    router.get("/shops", (request, response) => {
+        response.json(shops);
     });
-    res.json(file);
-});
+
+    // GET: //api/wsgi/shops/:shop_id
+    router.get("/shops/:shop_id", (request, response) => {
+        var shop = shops.filter(function(value, index, array){
+            if(value.id == request.params.shop_id) {
+                response.status(200).send("OK");
+                return true;
+            }
+            response.status(404).send("Not Found");
+            return false;
+        });
+        response.json(shop);
+    });
+
+    // GET: //api/wsgi/shops/:shop_id/files
+    router.get("/shops/:shop_id/files", (request, response) => {
+        var shopFiles = files.filter(function(value, index, array){
+            if(value.shop_id == request.params.shop_id) {
+                response.status(200).send("OK");
+                return true;
+            }
+            response.status(404).send("Not Found");
+            return false;
+        });
+        response.json(shopFiles);
+    });
+
+    // GET: //api/wsgi/files
+    router.get("/files", (request, response) => {
+        response.json(files);
+    });
+
+    // GET: //api/wsgi/files/:file_id
+    router.get("/files/:file_id", (request, response) => {
+        var file = files.filter(function(value, index, array){
+            if(value.id == request.params.file_id) {
+                response.status(200).send("OK");
+                return true;
+            }
+            response.status(404).send("Not Found");
+            return false;
+        });
+        response.json(file);
+    });
+
+    return router;
+})());
