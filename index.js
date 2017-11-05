@@ -405,7 +405,7 @@ app.get("/api/wsgi/companies/:company_id", function (req, res, next) {
         if(value.id == req.params.company_id) return true;
         return false;
     });
-    res.json(companies);
+    res.json(company);
 });
 
 app.get("/api/wsgi/shops", function (req, res, next) {
